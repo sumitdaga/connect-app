@@ -2,22 +2,60 @@ import React from 'react'
 import PT from 'prop-types'
 import './WinnerSelection.scss'
 import WinnerSelectionBar from '../WinnerSelectionBar'
+import MilestonePost from '../MilestonePost'
+
 
 class WinnerSelection extends React.Component {
   constructor(props) {
     super(props)
 
     this.checkActionHandler = this.checkActionHandler.bind(this)
+    this.checkBonusActionHandler = this.checkBonusActionHandler.bind(this)
     this.completeReview = this.completeReview.bind(this)
     this.toggleRejectedSection = this.toggleRejectedSection.bind(this)
-
+    this.completeSelect3TopWin = this.completeSelect3TopWin.bind(this)
     this.state = {
       selectedItemCount: 0,
       contentList: [],
       winnerList: [],
       postionIndex: [-1, -1, -1],
-      isReviewed: false
+      isReviewed: false,
+      isSelected3TopWin: false,
+      isCompleted: props.isCompleted,
+      inProgress: props.inProgress
     }
+  }
+
+  /**
+   * This function gets triggered when the checked state of radio change
+   */
+  checkBonusActionHandler(isChecked, index) {
+    const contentList = this.state.contentList
+    contentList[index].isWinBonus = isChecked
+    this.setState({ contentList })
+    this.resetWinnerList()
+  }
+
+  resetWinnerList() {
+    const winnerList = []
+    this.setState({
+      winnerList
+    })
+    const postionIndex = this.state.postionIndex
+    if (postionIndex[0] >= 0) {
+      winnerList.push(this.state.contentList[postionIndex[0]])
+    }
+    if (postionIndex[1] >= 0) {
+      winnerList.push(this.state.contentList[postionIndex[1]])
+    }
+    if (postionIndex[2] >= 0) {
+      winnerList.push(this.state.contentList[postionIndex[2]])
+    }
+    this.state.contentList.map((content) => {
+      if (content.isWinBonus) {
+        winnerList.push(content)
+      }
+    })
   }
 
   /**
@@ -28,12 +66,7 @@ class WinnerSelection extends React.Component {
     const selected = [].filter.call(textinputs, (el) => {
       return el.checked
     })
-    const winnerList = []
-    winnerList.push(this.state.contentList[8])
-    winnerList.push(this.state.contentList[2])
-    winnerList.push(this.state.contentList[1])
-    winnerList.push(this.state.contentList[6])
-
+    
     const postionIndex = this.state.postionIndex
     if (isChecked) {
       switch (forPosition) {
@@ -52,19 +85,33 @@ class WinnerSelection extends React.Component {
     }
     this.setState({
       postionIndex,
-      selectedItemCount: selected.length,
-      winnerList
+      selectedItemCount: selected.length
     })
-
+    this.resetWinnerList()
   }
 
   /**
    * complete review actions
    */
   completeReview() {
-    if (this.state.selectedItemCount >= 3) {
+    if (this.state.selectedItemCount >= 0) {
       this.setState({
-        isReviewed: true
+        isReviewed: true,
+        isCompleted: true,
+        inProgress: false,
+        isSelected3TopWin: false
+      })
+    }
+    this.props.finish()
+  }
+
+  /**
+   * complete review actions
+   */
+  completeSelect3TopWin() {
+    if (this.state.selectedItemCount >= 0) {
+      this.setState({
+        isSelected3TopWin: true
       })
     }
   }
@@ -93,8 +140,8 @@ class WinnerSelection extends React.Component {
     return (
       <div styleName={'milestone-post-specification '
         + (props.theme ? props.theme : '')
-        + (props.isCompleted ? ' completed ' : '')
-        + (props.inProgress ? 'in-progress' : '')
+        + (this.state.isCompleted ? ' completed ' : '')
+        + (this.state.inProgress ? 'in-progress ' : '')
       }
       >
         <span styleName="dot" />
@@ -118,6 +165,9 @@ class WinnerSelection extends React.Component {
                         index={i}
                         postionIndex={ this.state.postionIndex }
                         checkActionHandler={this.checkActionHandler}
+                        checkBonusActionHandler={this.checkBonusActionHandler}
+                        isReviewed={this.state.isReviewed}
+                        isSelected3TopWin={this.state.isSelected3TopWin}
                       />
                     </div>)
                   }
@@ -131,11 +181,10 @@ class WinnerSelection extends React.Component {
               <i>Please select all 3 places to complete the review</i>
             </div>
           )}
-          {(
+          {this.state.selectedItemCount > 0 && (
             <div styleName="action-bar" className="flex center">
-              <button styleName="tc-btn" className={'tc-btn ' + (this.state.selectedItemCount >= 3 ? 'tc-btn-primary' : '')}
-                onClick={this.completeReview}
-              >Complete review (32h remaining)</button>
+              {!this.state.isSelected3TopWin && (<button styleName="tc-btn" className={'tc-btn ' + (this.state.selectedItemCount >= 0 ? 'tc-btn-primary' : '')} onClick={this.completeSelect3TopWin} >Complete select 3 top win (32h remaining)</button>)}
+              {this.state.isSelected3TopWin && (<button styleName="tc-btn" className={'tc-btn ' + (this.state.selectedItemCount >= 0 ? 'tc-btn-primary' : '')} onClick={this.completeReview} >Complete review (32h remaining)</button>)}
             </div>
           )}
         </div>
@@ -158,6 +207,8 @@ class WinnerSelection extends React.Component {
                         index={i}
                         postionIndex={this.state.postionIndex}
                         checkActionHandler={this.checkActionHandler}
+                        isReviewed={this.state.isReviewed}
+                        isSelected3TopWin={this.state.isSelected3TopWin}
                       />
                     </div>)
                   }
@@ -166,6 +217,11 @@ class WinnerSelection extends React.Component {
             })
           }
         </div>
+
+        {props.isCompleted && (<div styleName="seperation-sm">
+          <MilestonePost label={'All design source files (567MB .zip)'} milestonePostFile={'https://docs.google.com/affdisdfg?5234fasdf&asdfasdf&asdf3vasddfaasdfadfasddsfjlk43jkldsfjas'} isCompleted={props.isCompleted} inProgress={props.inProgress} milestoneType={'download'}/>
+        </div>)}
+
       </div>
     )
   }
@@ -177,7 +233,13 @@ WinnerSelection.propTypes = {
   labelSpent: PT.string,
   labelStatus: PT.string,
   isCompleted: PT.bool,
-  inProgress: PT.bool
+  inProgress: PT.bool,
+  finish: PT.func
+}
+WinnerSelection.defaultProps = {
+  isCompleted: false,
+  inProgress: true,
+  finish: () => {}
 }
 
 export default WinnerSelection

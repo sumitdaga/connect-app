@@ -19,12 +19,17 @@ https://youtu.be/w-2-HeAFsWQ
 ## Demo page url
 Please visit these following pages for the demo.
 - Progress & menu components : http://local.topcoder-dev.com:3000/V3ComponentDemo
-- Timeline & Child Timeline components : http://local.topcoder-dev.com:3000/V3ComponentTimelineDemo
+- Timeline component life cycle: http://local.topcoder-dev.com:3000/V3ComponentTimelineDemo
+- Timeline component life cycle complete specification step: http://local.topcoder-dev.com:3000/V3ComponentTimelineDemo?section=0
+- Timeline component life cycle submission selection component step: http://local.topcoder-dev.com:3000/V3ComponentTimelineDemo?section=4
+- Timeline component life cycle winner selection component step: http://local.topcoder-dev.com:3000/V3ComponentTimelineDemo?section=5
+- Timeline component life cycle final fix request step: http://local.topcoder-dev.com:3000/V3ComponentTimelineDemo?section=6
 - Posts card and post feed components : http://local.topcoder-dev.com:3000/V3ComponentPostcardDemo
 - Submission selection component: http://local.topcoder-dev.com:3000/V3ComponentSubmissionSelectionDemo
 - Winner selection component : http://local.topcoder-dev.com:3000/V3ComponentWinnerSelectionDemo
 - Alert component : http://local.topcoder-dev.com:3000/V3ComponentAlertDemo
 - V3PhaseCard : http://local.topcoder-dev.com:3000/V3PhaseCard
+- Timeline child components : http://local.topcoder-dev.com:3000/V3TimeChildComponents
 
 ## Note
 Please note that timeline is a container component that's in scope
