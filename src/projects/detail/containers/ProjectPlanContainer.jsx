@@ -21,7 +21,6 @@ import {
 import { addProductAttachment, updateProductAttachment, removeProductAttachment } from '../../actions/projectAttachment'
 
 import TwoColsLayout from '../components/TwoColsLayout'
-import ProjectPlanProgress from '../components/ProjectPlanProgress'
 import ProjectStages from '../components/ProjectStages'
 import ProjectPlanEmpty from '../components/ProjectPlanEmpty'
 import MediaQuery from 'react-responsive'
@@ -120,13 +119,12 @@ class ProjectPlanContainer extends React.Component {
         <TwoColsLayout.Content>
           {visiblePhases && visiblePhases.length > 0 ? (
             [
-              activePhases.length > 0 && <ProjectPlanProgress phases={visiblePhases} project={project} productsTimelines={productsTimelines} key="progress" />,
+              activePhases.length > 0 &&
               <ProjectStages
                 {...{
                   ...this.props,
                   phases: visiblePhases
                 }}
-                key="stages"
               />
             ]
           ) : (
